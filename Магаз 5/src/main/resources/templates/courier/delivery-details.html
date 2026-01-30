@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставка #[[${order.id}]] - OMEGA Курьер</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Курьер</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/courier}">📊 Дашборд</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/courier/deliveries}">🚚 Доставки</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/courier/deliveries/history}">📜 История</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Доставка #[[${order.id}]]</h1>
+        <a th:href="@{/courier/deliveries}" class="btn btn-secondary">← Назад</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header"><h5 class="mb-0">Информация о заказе</h5></div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="40%">Статус доставки:</th>
+                            <td>
+                                <span th:switch="${order.deliveryStatus?.name()}">
+                                    <span th:case="'ASSIGNED'" class="badge bg-warning">Назначена</span>
+                                    <span th:case="'IN_TRANSIT'" class="badge bg-info">В пути</span>
+                                    <span th:case="'DELIVERED'" class="badge bg-success">Доставлен</span>
+                                    <span th:case="'FAILED'" class="badge bg-danger">Не доставлен</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr><th>Клиент:</th><td>[[${order.user.username}]]<br><small class="text-muted">[[${order.user.email}]]</small></td></tr>
+                        <tr><th>Телефон:</th><td>[[${order.phone}]]</td></tr>
+                        <tr><th>Адрес доставки:</th><td><strong>[[${order.deliveryAddress}]]</strong></td></tr>
+                        <tr th:if="${order.comment}"><th>Комментарий клиента:</th><td>[[${order.comment}]]</td></tr>
+                        <tr><th>Сумма заказа:</th><td><strong class="text-success fs-5">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</strong></td></tr>
+                        <tr th:if="${order.invoiceNumber}"><th>Накладная:</th><td>[[${order.invoiceNumber}]]</td></tr>
+                        <tr th:if="${order.courierComment}"><th>Мой комментарий:</th><td>[[${order.courierComment}]]</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Действия -->
+            <div class="card" th:if="${order.deliveryStatus?.name() == 'ASSIGNED' || order.deliveryStatus?.name() == 'READY'}">
+                <div class="card-header"><h5 class="mb-0">Действия</h5></div>
+                <div class="card-body">
+                    <form th:action="@{/courier/deliveries/{id}/start(id=${order.id})}" method="post" class="mb-3">
+                        <button type="submit" class="btn btn-primary w-100">🚚 Начать доставку</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card" th:if="${order.deliveryStatus?.name() == 'IN_TRANSIT'}">
+                <div class="card-header"><h5 class="mb-0">Завершение доставки</h5></div>
+                <div class="card-body">
+                    <form th:action="@{/courier/deliveries/{id}/complete(id=${order.id})}" method="post" class="mb-3">
+                        <div class="mb-3">
+                            <label class="form-label">Комментарий (необязательно):</label>
+                            <textarea name="courierComment" class="form-control" rows="3" placeholder="Добавьте комментарий о доставке"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">✅ Завершить доставку</button>
+                    </form>
+                    <form th:action="@{/courier/deliveries/{id}/problem(id=${order.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Опишите проблему:</label>
+                            <textarea name="problemComment" class="form-control" rows="3" required placeholder="Например: клиент не на месте, отказ от получения и т.д."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">⚠️ Отметить проблему</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><h5 class="mb-0">Товары в заказе</h5></div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr><th>Товар</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${order.items}">
+                                <td><strong th:text="${item.productName}">Товар</strong></td>
+                                <td>[[${item.quantity}]] шт.</td>
+                                <td>[[${#numbers.formatDecimal(item.price, 0, 'WHITESPACE', 2, 'POINT')}]] сом</td>
+                                <td><strong th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'WHITESPACE', 2, 'POINT')} + ' сом'">0.00 сом</strong></td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="3">Итого:</th>
+                                <th class="text-success">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+

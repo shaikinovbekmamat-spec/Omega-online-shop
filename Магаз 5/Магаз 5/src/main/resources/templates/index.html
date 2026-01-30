@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMEGA - Интернет-магазин бытовой техники</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            padding-top: 60px;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <strong>OMEGA</strong>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/}">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/catalog}">Каталог</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cart}">
+                        Корзина <span class="badge bg-danger">0</span>
+                    </a>
+                </li>
+
+                <!-- ТЕСТ: Показываем всегда -->
+                <li class="nav-item">
+                        <span class="nav-link text-warning">
+                            Auth Status: <span sec:authorize="isAuthenticated()">✅ Да</span>
+                            <span sec:authorize="!isAuthenticated()">❌ Нет</span>
+                        </span>
+                </li>
+
+                <!-- Если НЕ авторизован -->
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}">Вход</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/register}">Регистрация</a>
+                </li>
+
+                <!-- Если авторизован -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <span sec:authentication="name">Пользователь</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" th:href="@{/profile}">
+                                👤 Мой профиль
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/orders}">
+                                📦 Мои заказы
+                            </a>
+                        </li>
+                        <li sec:authorize="hasRole('ADMIN')">
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li sec:authorize="hasRole('ADMIN')">
+                            <a class="dropdown-item text-primary fw-bold" th:href="@{/admin}">
+                                ⚙️ Админ-панель
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="px-3 py-2">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">
+                                    🚪 Выход
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-3 fw-bold" th:text="${message}">
+            Добро пожаловать в OMEGA!
+        </h1>
+        <p class="lead mt-3">
+            Качественная бытовая техника по выгодным ценам
+        </p>
+        <a th:href="@{/catalog}" class="btn btn-light btn-lg mt-4">
+            Перейти в каталог
+        </a>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h3>🏠 Для дома</h3>
+                    <p class="text-muted">
+                        Холодильники, стиральные машины, пылесосы
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h3>🍳 Для кухни</h3>
+                    <p class="text-muted">
+                        Микроволновки, блендеры, кофеварки
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h3>💻 Электроника</h3>
+                    <p class="text-muted">
+                        Телевизоры, аудиосистемы, гаджеты
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4 mt-5">
+    <div class="container">
+        <p class="mb-0">© 2024 OMEGA. Все права защищены.</p>
+        <p class="small text-muted">
+            Интернет-магазин бытовой техники
+        </p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+</script>
+</body>
+</html>

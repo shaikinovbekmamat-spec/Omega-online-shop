@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление категориями - OMEGA Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Admin</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}">📊 Дашборд</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/products}">📦 Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/categories}">📁 Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/orders}">📋 Заказы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/reports}">📊 Отчёты</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">← Вернуться на сайт</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📁 Управление категориями</h1>
+        <a th:href="@{/admin/categories/new}" class="btn btn-success">
+            ➕ Добавить категорию
+        </a>
+    </div>
+
+    <!-- Сообщения -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Таблица категорий -->
+    <div class="card">
+        <div class="card-body">
+            <div th:if="${categories.empty}" class="text-center py-5">
+                <h4 class="text-muted">Категории отсутствуют</h4>
+                <a th:href="@{/admin/categories/new}" class="btn btn-primary mt-3">
+                    Создать первую категорию
+                </a>
+            </div>
+
+            <table th:unless="${categories.empty}" class="table table-hover">
+                <thead>
+                <tr>
+                    <th style="width: 10%">ID</th>
+                    <th style="width: 30%">Название</th>
+                    <th style="width: 40%">Описание</th>
+                    <th style="width: 10%">Товаров</th>
+                    <th style="width: 10%">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="category : ${categories}">
+                    <td>[[${category.id}]]</td>
+                    <td><strong th:text="${category.name}">Категория</strong></td>
+                    <td th:text="${category.description}">Описание</td>
+                    <td>
+                        <span class="badge bg-primary">
+                            <span th:text="${productCounts.get(category.id)}">0</span> шт.
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a th:href="@{/admin/categories/{id}/edit(id=${category.id})}"
+                               class="btn btn-outline-primary"
+                               title="Редактировать">
+                                ✏️
+                            </a>
+                            <form th:action="@{/admin/categories/{id}/delete(id=${category.id})}"
+                                  method="post"
+                                  style="display: inline;"
+                                  th:onsubmit="'return confirm(\'Удалить категорию ' + ${category.name} + '?\')'">
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm"
+                                        title="Удалить"
+                                        th:disabled="${productCounts.get(category.id) > 0}">
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Информация -->
+    <div class="alert alert-info mt-4">
+        <strong>ℹ️ Информация:</strong>
+        <ul class="mb-0 mt-2">
+            <li>Категорию нельзя удалить, если в ней есть товары</li>
+            <li>Сначала переместите или удалите товары из категории</li>
+        </ul>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

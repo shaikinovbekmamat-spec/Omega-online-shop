@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${category.id != null ? 'Редактировать категорию' : 'Новая категория'}">
+        Категория - OMEGA Admin
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/admin}"><strong>OMEGA</strong> Admin</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}">📊 Дашборд</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/products}">📦 Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/categories}">📁 Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/orders}">📋 Заказы</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/admin}">Админ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/admin/categories}">Категории</a></li>
+            <li class="breadcrumb-item active"
+                th:text="${category.id != null ? 'Редактировать' : 'Новая'}">
+                Форма
+            </li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0" th:text="${category.id != null ? 'Редактировать категорию' : 'Новая категория'}">
+                        Категория
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Сообщение об ошибке -->
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <!-- Форма -->
+                    <form th:action="${category.id != null ? '/admin/categories/' + category.id : '/admin/categories'}"
+                          th:object="${category}"
+                          method="post">
+
+                        <!-- Название -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                Название категории <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="name"
+                                   th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                   placeholder="Например: Холодильники"
+                                   required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}">
+                                <span th:errors="*{name}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Описание -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea class="form-control"
+                                      id="description"
+                                      th:field="*{description}"
+                                      rows="4"
+                                      placeholder="Краткое описание категории"></textarea>
+                            <div class="form-text">Необязательное поле</div>
+                        </div>
+
+                        <!-- Кнопки -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <span th:if="${category.id == null}">➕ Создать категорию</span>
+                                <span th:if="${category.id != null}">💾 Сохранить изменения</span>
+                            </button>
+                            <a th:href="@{/admin/categories}" class="btn btn-outline-secondary">
+                                Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

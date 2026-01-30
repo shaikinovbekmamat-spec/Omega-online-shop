@@ -1,0 +1,107 @@
+body {
+    background-color: #f6f8fb;
+}
+
+.admin-form-card {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 34, 67, 0.08);
+}
+
+.admin-form-card .card-header {
+    border-bottom: none;
+}
+
+.form-section-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #6279a8;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.upload-area {
+    border: 2px dashed #d0d7ff;
+    border-radius: 14px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background-color: #fff;
+}
+
+.upload-area:hover,
+.upload-area.dragover {
+    border-color: #4a6bff;
+    background-color: #f0f4ff;
+}
+
+.image-preview-container {
+    position: relative;
+    display: inline-block;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(26, 40, 83, 0.15);
+}
+
+.image-preview {
+    max-width: 100%;
+    display: block;
+}
+
+.remove-image {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(220, 53, 69, 0.95);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.remove-image:hover {
+    background: #dc3545;
+}
+
+.input-group-text {
+    background-color: #f0f3ff;
+    border: none;
+    font-weight: 600;
+}
+
+.admin-form-card .form-control,
+.admin-form-card .form-select {
+    border-radius: 10px;
+    border: 1px solid #d8e0ff;
+    padding: 0.85rem 1.1rem;
+}
+
+.admin-form-card .form-control:focus,
+.admin-form-card .form-select:focus {
+    border-color: #4a6bff;
+    box-shadow: 0 0 0 0.25rem rgba(74, 107, 255, 0.15);
+}
+
+.form-help {
+    font-size: 0.85rem;
+    color: #98a1c0;
+}
+
+@media (max-width: 768px) {
+    .admin-form-card {
+        border-radius: 14px;
+    }
+
+    .upload-area {
+        padding: 20px;
+    }
+}
+
+

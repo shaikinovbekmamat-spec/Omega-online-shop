@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставка #[[${order.id}]] - OMEGA Курьер</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- OMEGA Theme CSS -->
+    <link th:href="@{/css/omega-theme.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+        <div class="bg-circle bg-circle-4"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Курьер</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/courier}"><i class="fas fa-chart-line me-1"></i>Дашборд</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/courier/deliveries}"><i class="fas fa-truck me-1"></i>Доставки</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/courier/deliveries/history}"><i class="fas fa-history me-1"></i>История</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home me-1"></i>Вернуться на сайт</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="page-title" style="font-size: 2.5rem; margin: 0;">
+                <i class="fas fa-truck me-3"></i>Доставка #[[${order.id}]]
+            </h1>
+            <a th:href="@{/courier/deliveries}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Назад
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="glass-card mb-4">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-info-circle me-2"></i>Информация о заказе</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="40%" style="color: rgba(255,255,255,0.7);">Статус доставки:</th>
+                                <td>
+                                    <span th:switch="${order.deliveryStatus?.name()}">
+                                        <span th:case="'ASSIGNED'" class="badge bg-warning">Назначена</span>
+                                        <span th:case="'IN_TRANSIT'" class="badge bg-info">В пути</span>
+                                        <span th:case="'DELIVERED'" class="badge bg-success">Доставлен</span>
+                                        <span th:case="'FAILED'" class="badge bg-danger">Не доставлен</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="color: rgba(255,255,255,0.7);">Клиент:</th>
+                                <td style="color: #fff;">
+                                    <strong>[[${order.user.username}]]</strong><br>
+                                    <small style="color: rgba(255,255,255,0.6);">[[${order.user.email}]]</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="color: rgba(255,255,255,0.7);"><i class="fas fa-phone me-1"></i>Телефон:</th>
+                                <td style="color: #fff;">[[${order.phone}]]</td>
+                            </tr>
+                            <tr>
+                                <th style="color: rgba(255,255,255,0.7);"><i class="fas fa-map-marker-alt me-1"></i>Адрес доставки:</th>
+                                <td style="color: #fff;"><strong>[[${order.deliveryAddress}]]</strong></td>
+                            </tr>
+                            <tr th:if="${order.comment}">
+                                <th style="color: rgba(255,255,255,0.7);"><i class="fas fa-comment me-1"></i>Комментарий клиента:</th>
+                                <td style="color: rgba(255,255,255,0.8);">[[${order.comment}]]</td>
+                            </tr>
+                            <tr>
+                                <th style="color: rgba(255,255,255,0.7);">Сумма заказа:</th>
+                                <td><strong class="fs-5" style="color: #4facfe;">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</strong></td>
+                            </tr>
+                            <tr th:if="${order.invoiceNumber}">
+                                <th style="color: rgba(255,255,255,0.7);">Накладная:</th>
+                                <td style="color: #fff;">[[${order.invoiceNumber}]]</td>
+                            </tr>
+                            <tr th:if="${order.courierComment}">
+                                <th style="color: rgba(255,255,255,0.7);">Мой комментарий:</th>
+                                <td style="color: rgba(255,255,255,0.8);">[[${order.courierComment}]]</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Действия -->
+                <div class="glass-card mb-4" th:if="${order.deliveryStatus?.name() == 'ASSIGNED' || order.deliveryStatus?.name() == 'READY'}">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-bolt me-2"></i>Действия</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <form th:action="@{/courier/deliveries/{id}/start(id=${order.id})}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <button type="submit" class="btn btn-primary w-100 btn-lg">
+                                <i class="fas fa-truck me-2"></i>Начать доставку
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="glass-card" th:if="${order.deliveryStatus?.name() == 'IN_TRANSIT'}">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-check-circle me-2"></i>Завершение доставки</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <form th:action="@{/courier/deliveries/{id}/complete(id=${order.id})}" method="post" class="mb-3">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <div class="mb-3">
+                                <label class="form-label">Комментарий (необязательно):</label>
+                                <textarea name="courierComment" class="form-control" rows="3" placeholder="Добавьте комментарий о доставке"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 btn-lg">
+                                <i class="fas fa-check me-2"></i>Завершить доставку
+                            </button>
+                        </form>
+                        <form th:action="@{/courier/deliveries/{id}/problem(id=${order.id})}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <div class="mb-3">
+                                <label class="form-label">Опишите проблему:</label>
+                                <textarea name="problemComment" class="form-control" rows="3" required placeholder="Например: клиент не на месте, отказ от получения и т.д."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100 btn-lg">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Отметить проблему
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="glass-card">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-box me-2"></i>Товары в заказе</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th style="color: rgba(255,255,255,0.7);">Товар</th>
+                                    <th style="color: rgba(255,255,255,0.7);">Кол-во</th>
+                                    <th style="color: rgba(255,255,255,0.7);">Цена</th>
+                                    <th style="color: rgba(255,255,255,0.7);">Сумма</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${order.items}">
+                                    <td style="color: #fff;"><strong th:text="${item.productName}">Товар</strong></td>
+                                    <td style="color: rgba(255,255,255,0.8);">[[${item.quantity}]] шт.</td>
+                                    <td style="color: rgba(255,255,255,0.8);">[[${#numbers.formatDecimal(item.price, 0, 'WHITESPACE', 2, 'POINT')}]] сом</td>
+                                    <td style="color: #4facfe;"><strong th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'WHITESPACE', 2, 'POINT')} + ' сом'">0.00 сом</strong></td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th colspan="3" style="color: #fff;">Итого:</th>
+                                    <th class="text-success" style="color: #4facfe !important;">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

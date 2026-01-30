@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа - OMEGA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+        .order-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            position: sticky;
+            top: 90px;
+        }
+        .item-row {
+            border-bottom: 1px solid #dee2e6;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong></a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Главная</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/catalog}">Каталог</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Корзина</a></li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown">
+                        <span sec:authentication="name">Пользователь</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/orders}">Мои заказы</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><hr class="dropdown-divider"></li>
+                        <li sec:authorize="hasRole('ADMIN')">
+                            <a class="dropdown-item" th:href="@{/admin}">Админ-панель</a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="px-3 py-2">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">Выход</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/cart}">Корзина</a></li>
+            <li class="breadcrumb-item active">Оформление заказа</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">📦 Оформление заказа</h1>
+
+    <!-- Сообщение об ошибке -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="row">
+        <!-- Форма оформления -->
+        <div class="col-lg-7">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Данные доставки</h5>
+
+                    <form th:action="@{/checkout}" th:object="${orderDto}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                        <!-- Телефон -->
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">
+                                Телефон <span class="text-danger">*</span>
+                            </label>
+                            <input type="tel"
+                                   class="form-control"
+                                   id="phone"
+                                   th:field="*{phone}"
+                                   th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''"
+                                   placeholder="(+999)-999-999-999">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}">
+                                <span th:errors="*{phone}"></span>
+                            </div>
+                            <div class="form-text">Формат: (+999)-999-999-999</div>
+                        </div>
+
+                        <!-- Адрес доставки -->
+                        <div class="mb-3">
+                            <label for="deliveryAddress" class="form-label">
+                                Адрес доставки <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control"
+                                      id="deliveryAddress"
+                                      th:field="*{deliveryAddress}"
+                                      th:classappend="${#fields.hasErrors('deliveryAddress')} ? 'is-invalid' : ''"
+                                      rows="3"
+                                      placeholder="Город, улица, дом, квартира"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('deliveryAddress')}">
+                                <span th:errors="*{deliveryAddress}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Комментарий -->
+                        <div class="mb-4">
+                            <label for="comment" class="form-label">Комментарий к заказу</label>
+                            <textarea class="form-control"
+                                      id="comment"
+                                      th:field="*{comment}"
+                                      rows="3"
+                                      placeholder="Дополнительная информация (необязательно)"></textarea>
+                            <div class="form-text">Укажите удобное время доставки, код домофона и т.д.</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                ✅ Оформить заказ
+                            </button>
+                            <a th:href="@{/cart}" class="btn btn-outline-secondary">
+                                ← Вернуться в корзину
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Итоговая информация -->
+        <div class="col-lg-5">
+            <div class="order-summary">
+                <h5 class="mb-3">Ваш заказ</h5>
+
+                <!-- Список товаров -->
+                <div class="mb-3">
+                    <div th:each="item : ${cart.items}" class="item-row">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="flex-grow-1">
+                                <strong th:text="${item.productName}">Товар</strong>
+                                <br>
+                                <small class="text-muted">
+                                    [[${#numbers.formatDecimal(item.price, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                                    × [[${item.quantity}]] шт.
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <strong th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'WHITESPACE', 2, 'POINT')} + ' сом'">
+                                    0 сом
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Итого -->
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Товаров:</span>
+                    <strong>[[${cart.totalItems}]] шт.</strong>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <h5>Итого:</h5>
+                    <h5 class="text-success">
+                        [[${#numbers.formatDecimal(cart.totalPrice, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                    </h5>
+                </div>
+
+                <div class="alert alert-info small mb-0">
+                    <strong>ℹ️ Обратите внимание:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Доставка рассчитывается отдельно</li>
+                        <li>Оплата при получении</li>
+                        <li>Проверка товара при получении</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

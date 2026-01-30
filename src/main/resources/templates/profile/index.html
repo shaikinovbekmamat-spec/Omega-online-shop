@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль - OMEGA</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 60px;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float-around 20s infinite ease-in-out;
+        }
+
+        .bg-circle-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .bg-circle-2 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            top: 50%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .bg-circle-3 {
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            bottom: 10%;
+            left: 30%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float-around {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, 50px) scale(1.1); }
+            50% { transform: translate(-30px, 80px) scale(0.9); }
+            75% { transform: translate(70px, -40px) scale(1.05); }
+        }
+
+        /* Navbar */
+        .navbar {
+            backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(26, 26, 46, 0.85) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #fff !important;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+        }
+
+        /* Profile Cards */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .profile-card-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+        }
+
+        .profile-card-header h4,
+        .profile-card-header h5 {
+            color: #fff;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-card-body {
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .table {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .table th {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+        }
+
+        .table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            font-size: 0.85rem;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, #f093fb, #f5576c) !important;
+        }
+
+        .badge.bg-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
+        }
+
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057) !important;
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-outline-primary {
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            color: rgba(102, 126, 234, 1);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-outline-success {
+            border: 2px solid rgba(79, 172, 254, 0.5);
+            color: rgba(79, 172, 254, 1);
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .btn-outline-success:hover {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-color: transparent;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-outline-warning {
+            border: 2px solid rgba(250, 112, 154, 0.5);
+            color: rgba(250, 112, 154, 1);
+            background: rgba(250, 112, 154, 0.1);
+        }
+
+        .btn-outline-warning:hover {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            border-color: transparent;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(250, 112, 154, 0.4);
+        }
+
+        .btn-outline-danger {
+            border: 2px solid rgba(240, 147, 251, 0.5);
+            color: rgba(240, 147, 251, 1);
+            background: rgba(240, 147, 251, 0.1);
+        }
+
+        .btn-outline-danger:hover {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-color: transparent;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        /* Page Title */
+        .page-title {
+            color: #fff;
+            font-weight: 800;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Alert */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-danger {
+            background: rgba(240, 147, 251, 0.2);
+            color: #fff;
+            border: 1px solid rgba(240, 147, 251, 0.3);
+        }
+
+        /* Icon Animation */
+        .icon-bounce {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}">Главная</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/catalog}">Каталог</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Корзина</a></li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span sec:authentication="name">Пользователь</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item active" th:href="@{/profile}"><i class="fas fa-user me-2"></i>Мой профиль</a></li>
+                            <li><a class="dropdown-item" th:href="@{/orders}"><i class="fas fa-shopping-bag me-2"></i>Мои заказы</a></li>
+                            <li sec:authorize="hasRole('SELLER')">
+                                <a class="dropdown-item text-primary fw-bold" th:href="@{/seller}"><i class="fas fa-store me-2"></i>Панель продавца</a>
+                            </li>
+                            <li sec:authorize="hasRole('COURIER')">
+                                <a class="dropdown-item text-success fw-bold" th:href="@{/courier}"><i class="fas fa-truck me-2"></i>Панель курьера</a>
+                            </li>
+                            <li sec:authorize="hasAnyRole('ADMIN', 'SELLER', 'COURIER')"><hr class="dropdown-divider"></li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" th:href="@{/admin}"><i class="fas fa-cog me-2"></i>Админ-панель</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="px-3 py-2">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Выход
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1 class="page-title">
+            <i class="fas fa-user-circle me-3 icon-bounce"></i>Мой профиль
+        </h1>
+
+        <!-- Messages -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row g-4">
+            <!-- Main Info Card -->
+            <div class="col-lg-8">
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <h4><i class="fas fa-info-circle me-2"></i>Информация о пользователе</h4>
+                    </div>
+                    <div class="profile-card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="30%"><i class="fas fa-user me-2"></i>Имя пользователя:</th>
+                                <td><strong th:text="${user.username}" style="color: #667eea; font-size: 1.2rem;">Username</strong></td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-envelope me-2"></i>Email:</th>
+                                <td th:text="${user.email}">email@example.com</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-phone me-2"></i>Телефон:</th>
+                                <td th:text="${user.phone != null ? user.phone : 'Не указан'}">+996 555 123456</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-user-tag me-2"></i>Роль:</th>
+                                <td>
+                                    <span th:if="${user.role.name() == 'ADMIN'}" class="badge bg-danger">
+                                        <i class="fas fa-crown me-1"></i>Администратор
+                                    </span>
+                                    <span th:if="${user.role.name() == 'SELLER'}" class="badge bg-primary">
+                                        <i class="fas fa-store me-1"></i>Продавец
+                                    </span>
+                                    <span th:if="${user.role.name() == 'COURIER'}" class="badge bg-success">
+                                        <i class="fas fa-truck me-1"></i>Курьер
+                                    </span>
+                                    <span th:if="${user.role.name() == 'CLIENT'}" class="badge bg-primary">
+                                        <i class="fas fa-user me-1"></i>Клиент
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-check-circle me-2"></i>Статус:</th>
+                                <td>
+                                    <span th:if="${user.isActive}" class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Активен
+                                    </span>
+                                    <span th:unless="${user.isActive}" class="badge bg-secondary">
+                                        <i class="fas fa-times me-1"></i>Неактивен
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-calendar me-2"></i>Дата регистрации:</th>
+                                <td th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="col-lg-4">
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <h5><i class="fas fa-bolt me-2"></i>Быстрые действия</h5>
+                    </div>
+                    <div class="profile-card-body">
+                        <div class="d-grid gap-3">
+                            <a th:href="@{/orders}" class="btn btn-outline-primary">
+                                <i class="fas fa-shopping-bag me-2"></i>Мои заказы
+                            </a>
+                            <a th:href="@{/catalog}" class="btn btn-outline-success">
+                                <i class="fas fa-store me-2"></i>Каталог товаров
+                            </a>
+                            <a th:href="@{/cart}" class="btn btn-outline-warning">
+                                <i class="fas fa-shopping-cart me-2"></i>Корзина
+                            </a>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <hr style="border-color: rgba(255,255,255,0.1);">
+                                <a th:href="@{/admin}" class="btn btn-outline-danger">
+                                    <i class="fas fa-cog me-2"></i>Админ-панель
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('SELLER')">
+                                <hr style="border-color: rgba(255,255,255,0.1);">
+                                <a th:href="@{/seller}" class="btn btn-outline-primary">
+                                    <i class="fas fa-store me-2"></i>Панель продавца
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('COURIER')">
+                                <hr style="border-color: rgba(255,255,255,0.1);">
+                                <a th:href="@{/courier}" class="btn btn-outline-success">
+                                    <i class="fas fa-truck me-2"></i>Панель курьера
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

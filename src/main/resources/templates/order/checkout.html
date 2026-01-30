@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа - OMEGA</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- OMEGA Theme CSS -->
+    <link th:href="@{/css/omega-theme.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+        <div class="bg-circle bg-circle-4"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home me-1"></i>Главная</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/catalog}"><i class="fas fa-th me-1"></i>Каталог</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cart}"><i class="fas fa-shopping-cart me-1"></i>Корзина</a></li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span sec:authentication="name">Пользователь</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" th:href="@{/profile}"><i class="fas fa-user me-2"></i>Мой профиль</a></li>
+                            <li><a class="dropdown-item" th:href="@{/orders}"><i class="fas fa-shopping-bag me-2"></i>Мои заказы</a></li>
+                            <li sec:authorize="hasRole('SELLER')">
+                                <a class="dropdown-item text-primary fw-bold" th:href="@{/seller}"><i class="fas fa-store me-2"></i>Панель продавца</a>
+                            </li>
+                            <li sec:authorize="hasRole('COURIER')">
+                                <a class="dropdown-item text-success fw-bold" th:href="@{/courier}"><i class="fas fa-truck me-2"></i>Панель курьера</a>
+                            </li>
+                            <li sec:authorize="hasAnyRole('ADMIN', 'SELLER', 'COURIER')"><hr class="dropdown-divider"></li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" th:href="@{/admin}"><i class="fas fa-cog me-2"></i>Админ-панель</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="px-3 py-2">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100"><i class="fas fa-sign-out-alt me-2"></i>Выход</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 10px;">
+                <li class="breadcrumb-item"><a th:href="@{/}" style="color: rgba(255,255,255,0.7);">Главная</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/cart}" style="color: rgba(255,255,255,0.7);">Корзина</a></li>
+                <li class="breadcrumb-item active" style="color: #fff;">Оформление заказа</li>
+            </ol>
+        </nav>
+
+        <h1 class="page-title mb-4">
+            <i class="fas fa-shopping-bag me-3 icon-bounce"></i>Оформление заказа
+        </h1>
+
+        <!-- Сообщение об ошибке -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <!-- Форма оформления -->
+            <div class="col-lg-7">
+                <div class="glass-card mb-4">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-truck me-2"></i>Данные доставки</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <form th:action="@{/checkout}" th:object="${orderDto}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                            <!-- Телефон -->
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>Телефон <span class="text-danger">*</span>
+                                </label>
+                                <input type="tel"
+                                       class="form-control"
+                                       id="phone"
+                                       th:field="*{phone}"
+                                       th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''"
+                                       placeholder="(+999)-999-999-999">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}">
+                                    <span th:errors="*{phone}"></span>
+                                </div>
+                                <div class="form-text" style="color: rgba(255,255,255,0.6);">Формат: (+999)-999-999-999</div>
+                            </div>
+
+                            <!-- Адрес доставки -->
+                            <div class="mb-3">
+                                <label for="deliveryAddress" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Адрес доставки <span class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control"
+                                          id="deliveryAddress"
+                                          th:field="*{deliveryAddress}"
+                                          th:classappend="${#fields.hasErrors('deliveryAddress')} ? 'is-invalid' : ''"
+                                          rows="3"
+                                          placeholder="Город, улица, дом, квартира"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('deliveryAddress')}">
+                                    <span th:errors="*{deliveryAddress}"></span>
+                                </div>
+                            </div>
+
+                            <!-- Комментарий -->
+                            <div class="mb-4">
+                                <label for="comment" class="form-label">
+                                    <i class="fas fa-comment me-2"></i>Комментарий к заказу
+                                </label>
+                                <textarea class="form-control"
+                                          id="comment"
+                                          th:field="*{comment}"
+                                          rows="3"
+                                          placeholder="Дополнительная информация (необязательно)"></textarea>
+                                <div class="form-text" style="color: rgba(255,255,255,0.6);">Укажите удобное время доставки, код домофона и т.д.</div>
+                            </div>
+
+                            <!-- Раздел оплаты -->
+                            <div class="glass-card mb-4" style="border: 2px solid rgba(102, 126, 234, 0.3);">
+                                <div class="card-header-glass">
+                                    <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Данные для оплаты</h6>
+                                </div>
+                                <div class="card-body" style="padding: 2rem;">
+                                    <!-- Номер карты -->
+                                    <div class="mb-3">
+                                        <label for="cardNumber" class="form-label">
+                                            Номер карты <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="cardNumber"
+                                               name="cardNumber"
+                                               th:value="${orderDto?.cardNumber != null ? orderDto.cardNumber : ''}"
+                                               th:classappend="${#fields.hasErrors('cardNumber')} ? 'is-invalid' : ''"
+                                               placeholder="0000 0000 0000 0000"
+                                               maxlength="19"
+                                               autocomplete="cc-number">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('cardNumber')}">
+                                            <span th:errors="*{cardNumber}"></span>
+                                        </div>
+                                        <div class="form-text" style="color: rgba(255,255,255,0.6);">Введите 16-значный номер карты</div>
+                                    </div>
+
+                                    <!-- CVV код -->
+                                    <div class="mb-3">
+                                        <label for="cvv" class="form-label">
+                                            CVV код <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="cvv"
+                                               name="cvv"
+                                               th:value="${orderDto?.cvv != null ? orderDto.cvv : ''}"
+                                               th:classappend="${#fields.hasErrors('cvv')} ? 'is-invalid' : ''"
+                                               placeholder="123"
+                                               maxlength="3"
+                                               autocomplete="cc-csc">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('cvv')}">
+                                            <span th:errors="*{cvv}"></span>
+                                        </div>
+                                        <div class="form-text" style="color: rgba(255,255,255,0.6);">3-значный код на обратной стороне карты</div>
+                                    </div>
+
+                                    <div class="alert alert-info small mb-0">
+                                        <i class="fas fa-shield-alt me-2"></i> Ваши данные защищены и не сохраняются на сервере
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-check me-2"></i>Оформить заказ
+                                </button>
+                                <a th:href="@{/cart}" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left me-2"></i>Вернуться в корзину
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Итоговая информация -->
+            <div class="col-lg-5">
+                <div class="glass-card sticky-top" style="top: 90px;">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-list me-2"></i>Ваш заказ</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <!-- Список товаров -->
+                        <div class="mb-3">
+                            <div th:each="item : ${cart.items}" class="item-row" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem 0;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="flex-grow-1">
+                                        <strong style="color: #fff;" th:text="${item.productName}">Товар</strong>
+                                        <br>
+                                        <small style="color: rgba(255,255,255,0.6);">
+                                            [[${#numbers.formatDecimal(item.price, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                                            × [[${item.quantity}]] шт.
+                                        </small>
+                                    </div>
+                                    <div class="text-end">
+                                        <strong style="color: #4facfe;" th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'WHITESPACE', 2, 'POINT')} + ' сом'">
+                                            0 сом
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="border-color: rgba(255,255,255,0.1);">
+
+                        <!-- Итого -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <span style="color: rgba(255,255,255,0.7);">Товаров:</span>
+                            <strong style="color: #fff;">[[${cart.totalItems}]] шт.</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 style="color: #fff;">Итого:</h5>
+                            <h5 class="text-success" style="color: #4facfe !important;">
+                                [[${#numbers.formatDecimal(cart.totalPrice, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                            </h5>
+                        </div>
+
+                        <div class="alert alert-info small mb-0">
+                            <strong><i class="fas fa-info-circle me-2"></i>Обратите внимание:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Доставка рассчитывается отдельно</li>
+                                <li>Оплата картой при оформлении заказа</li>
+                                <li>Проверка товара при получении</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const cardNumberInput = document.getElementById('cardNumber');
+        if (cardNumberInput) {
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '');
+                value = value.replace(/\D/g, '');
+                if (value.length > 16) value = value.substring(0, 16);
+                let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+                e.target.value = formatted;
+            });
+            cardNumberInput.addEventListener('blur', function(e) {
+                const digitsOnly = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+                e.target.setAttribute('data-card-digits', digitsOnly);
+            });
+        }
+
+        const cvvInput = document.getElementById('cvv');
+        if (cvvInput) {
+            cvvInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 3) value = value.substring(0, 3);
+                e.target.value = value;
+            });
+        }
+
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const cardNumberField = document.getElementById('cardNumber');
+                const cvvField = document.getElementById('cvv');
+                if (cardNumberField) {
+                    let cardNumber = cardNumberField.value.replace(/\s/g, '').replace(/\D/g, '');
+                    cardNumberField.value = cardNumber;
+                }
+                if (cvvField) {
+                    const cvv = cvvField.value.replace(/\D/g, '');
+                    cvvField.value = cvv;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

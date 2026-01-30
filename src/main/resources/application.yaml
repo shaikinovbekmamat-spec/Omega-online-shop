@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: omega-shop
+
+  # PostgreSQL Database
+  datasource:
+    url: jdbc:postgresql://localhost:5432/omegadb
+    username: postgres
+    password: 5555
+    driver-class-name: org.postgresql.Driver
+
+  # JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update  # Временно изменено для создания недостающих колонок
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # Flyway Migrations
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: false
+    # Выполнять миграции перед инициализацией JPA
+    baseline-version: 0
+
+  # Thymeleaf
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+
+  # File Upload
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+  # Security
+  security:
+    user:
+      name: admin
+      password: admin
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.omega.shop: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+
+# Server
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+
+# Custom Properties
+omega:
+  upload:
+    dir: ${user.home}/omega-uploads

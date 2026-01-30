@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История заказов - OMEGA Продавец</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Продавец</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/seller}">📊 Дашборд</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/new}">🆕 Новые заказы</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/in-progress}">⚙️ В обработке</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/ready}">📦 Готовы к отправке</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/seller/orders/history}">📜 История</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid my-5">
+    <h1 class="mb-4">📜 История обработанных заказов</h1>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" action="/seller/orders/history">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">Фильтр по статусу:</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Все заказы</option>
+                            <option th:each="status : ${statuses}"
+                                    th:value="${status.name()}"
+                                    th:text="${status.displayName}"
+                                    th:selected="${selectedStatus != null && selectedStatus == status}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Применить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Пользователь</th>
+                        <th>Дата</th>
+                        <th>Телефон</th>
+                        <th>Адрес</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td><strong>#[[${order.id}]]</strong></td>
+                        <td>[[${order.user.username}]]</td>
+                        <td>[[${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}]]</td>
+                        <td>[[${order.phone}]]</td>
+                        <td><small>[[${#strings.abbreviate(order.deliveryAddress, 30)}]]</small></td>
+                        <td><strong th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')} + ' сом'">0.00 сом</strong></td>
+                        <td>
+                            <span th:switch="${order.status.name()}">
+                                <span th:case="'NEW'" class="badge bg-warning">Новый</span>
+                                <span th:case="'IN_PROGRESS'" class="badge bg-info">В обработке</span>
+                                <span th:case="'READY_FOR_DELIVERY'" class="badge bg-success">Готов к отправке</span>
+                                <span th:case="'DELIVERED'" class="badge bg-success">Доставлен</span>
+                                <span th:case="'CANCELLED'" class="badge bg-danger">Отменён</span>
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/seller/orders/{id}(id=${order.id})}" class="btn btn-sm btn-primary">Просмотр</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="8" class="text-center text-muted py-5">Заказов не найдено</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav th:if="${totalPages > 1}">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/seller/orders/history(page=${currentPage - 1}, status=${selectedStatus?.name()})}">Предыдущая</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/seller/orders/history(page=${i}, status=${selectedStatus?.name()})}" th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/seller/orders/history(page=${currentPage + 1}, status=${selectedStatus?.name()})}">Следующая</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+

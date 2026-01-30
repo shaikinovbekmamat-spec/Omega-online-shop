@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - OMEGA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .stat-icon {
+            font-size: 3rem;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Admin</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin}">📊 Дашборд</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/products}">📦 Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/categories}">📁 Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/orders}">📋 Заказы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/reports}">📊 Отчёты</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">← Вернуться на сайт</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown">
+                        <span sec:authentication="name">Админ</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="px-3 py-2">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">Выход</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid my-5">
+    <h1 class="mb-4">📊 Панель управления</h1>
+
+    <!-- Статистика -->
+    <div class="row g-4">
+        <!-- Товары -->
+        <div class="col-md-4">
+            <div class="card stat-card text-white bg-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Товары</h6>
+                            <h2 class="mb-0">[[${totalProducts}]]</h2>
+                            <small>Всего товаров</small>
+                        </div>
+                        <div class="stat-icon">📦</div>
+                    </div>
+                    <hr class="bg-white">
+                    <a th:href="@{/admin/products}" class="text-white text-decoration-none">
+                        Управление товарами →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Категории -->
+        <div class="col-md-4">
+            <div class="card stat-card text-white bg-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Категории</h6>
+                            <h2 class="mb-0">[[${totalCategories}]]</h2>
+                            <small>Всего категорий</small>
+                        </div>
+                        <div class="stat-icon">📁</div>
+                    </div>
+                    <hr class="bg-white">
+                    <a th:href="@{/admin/categories}" class="text-white text-decoration-none">
+                        Управление категориями →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Заказы -->
+        <div class="col-md-4">
+            <div class="card stat-card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Заказы</h6>
+                            <h2 class="mb-0">[[${totalOrders}]]</h2>
+                            <small>Всего заказов</small>
+                        </div>
+                        <div class="stat-icon">📋</div>
+                    </div>
+                    <hr class="bg-white">
+                    <a th:href="@{/admin/orders}" class="text-white text-decoration-none">
+                        Управление заказами →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Быстрые действия -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-3">Быстрые действия</h3>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/admin/products/new}" class="btn btn-primary w-100 py-3">
+                ➕ Добавить товар
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/admin/categories/new}" class="btn btn-success w-100 py-3">
+                ➕ Добавить категорию
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/admin/orders?status=NEW}" class="btn btn-warning w-100 py-3">
+                📋 Новые заказы
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/admin/reports}" class="btn btn-info w-100 py-3">
+                📊 Отчёты
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

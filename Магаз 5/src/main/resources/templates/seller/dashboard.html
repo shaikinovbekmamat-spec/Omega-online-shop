@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель продавца - OMEGA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .stat-icon {
+            font-size: 3rem;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Продавец</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/seller}">📊 Дашборд</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/seller/orders/new}">🆕 Новые заказы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/seller/orders/in-progress}">⚙️ В обработке</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/seller/orders/ready}">📦 Готовы к отправке</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/seller/orders/history}">📜 История</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">← Вернуться на сайт</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown">
+                        <span sec:authentication="name">Продавец</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="px-3 py-2">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">Выход</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid my-5">
+    <h1 class="mb-4">📊 Панель продавца</h1>
+
+    <!-- Статистика -->
+    <div class="row g-4">
+        <!-- Новые заказы -->
+        <div class="col-md-4">
+            <div class="card stat-card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Новые заказы</h6>
+                            <h2 class="mb-0">[[${newOrdersCount}]]</h2>
+                            <small>Требуют обработки</small>
+                        </div>
+                        <div class="stat-icon">🆕</div>
+                    </div>
+                    <hr class="bg-white">
+                    <a th:href="@{/seller/orders/new}" class="text-white text-decoration-none">
+                        Обработать заказы →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- В обработке -->
+        <div class="col-md-4">
+            <div class="card stat-card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">В обработке</h6>
+                            <h2 class="mb-0">[[${inProgressCount}]]</h2>
+                            <small>Готовятся к отправке</small>
+                        </div>
+                        <div class="stat-icon">⚙️</div>
+                    </div>
+                    <hr class="bg-white">
+                    <a th:href="@{/seller/orders/in-progress}" class="text-white text-decoration-none">
+                        Просмотреть →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Готовы к отправке -->
+        <div class="col-md-4">
+            <div class="card stat-card text-white bg-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Готовы к отправке</h6>
+                            <h2 class="mb-0">[[${readyForDeliveryCount}]]</h2>
+                            <small>Ожидают курьера</small>
+                        </div>
+                        <div class="stat-icon">📦</div>
+                    </div>
+                    <hr class="bg-white">
+                    <a th:href="@{/seller/orders/ready}" class="text-white text-decoration-none">
+                        Назначить курьера →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Быстрые действия -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-3">Быстрые действия</h3>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/seller/orders/new}" class="btn btn-warning w-100 py-3">
+                🆕 Новые заказы
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/seller/orders/in-progress}" class="btn btn-info w-100 py-3">
+                ⚙️ В обработке
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/seller/orders/ready}" class="btn btn-success w-100 py-3">
+                📦 Готовы к отправке
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a th:href="@{/seller/orders/history}" class="btn btn-secondary w-100 py-3">
+                📜 История
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+

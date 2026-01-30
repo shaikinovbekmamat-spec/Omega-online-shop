@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.id != null ? 'Редактировать товар' : 'Новый товар'}">
+        Товар - OMEGA Admin
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/admin}"><strong>OMEGA</strong> Admin</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}">📊 Дашборд</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/products}">📦 Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/categories}">📁 Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/orders}">📋 Заказы</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/admin}">Админ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/admin/products}">Товары</a></li>
+            <li class="breadcrumb-item active"
+                th:text="${product.id != null ? 'Редактировать' : 'Новый'}">
+                Форма
+            </li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0" th:text="${product.id != null ? 'Редактировать товар' : 'Новый товар'}">
+                        Товар
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Сообщение об ошибке -->
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <!-- Форма -->
+                    <form th:action="${product.id != null ? '/admin/products/' + product.id : '/admin/products'}"
+                          th:object="${product}"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        <div class="row">
+                            <!-- Левая колонка -->
+                            <div class="col-md-6">
+                                <!-- Название -->
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">
+                                        Название товара <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="name"
+                                           th:field="*{name}"
+                                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                           placeholder="Например: Samsung RB34T632ESA"
+                                           required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}">
+                                        <span th:errors="*{name}"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Категория -->
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">
+                                        Категория <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select"
+                                            id="category"
+                                            th:field="*{category}"
+                                            required>
+                                        <option value="">Выберите категорию</option>
+                                        <option th:each="cat : ${categories}"
+                                                th:value="${cat.id}"
+                                                th:text="${cat.name}">
+                                            Категория
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Цена -->
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">
+                                        Цена (₽) <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="price"
+                                           th:field="*{price}"
+                                           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
+                                           step="0.01"
+                                           min="0.01"
+                                           placeholder="45990.00"
+                                           required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}">
+                                        <span th:errors="*{price}"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Количество -->
+                                <div class="mb-3">
+                                    <label for="quantity" class="form-label">
+                                        Количество на складе <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="quantity"
+                                           th:field="*{quantity}"
+                                           th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''"
+                                           min="0"
+                                           placeholder="15"
+                                           required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}">
+                                        <span th:errors="*{quantity}"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Активность -->
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           id="isActive"
+                                           th:field="*{active}">
+                                    <label class="form-check-label" for="isActive">
+                                        Товар активен (показывается в каталоге)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Правая колонка -->
+                            <div class="col-md-6">
+                                <!-- Описание -->
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Описание</label>
+                                    <textarea class="form-control"
+                                              id="description"
+                                              th:field="*{description}"
+                                              rows="4"
+                                              placeholder="Краткое описание товара"></textarea>
+                                </div>
+
+                                <!-- Характеристики -->
+                                <div class="mb-3">
+                                    <label for="specifications" class="form-label">Характеристики (JSON)</label>
+                                    <textarea class="form-control"
+                                              id="specifications"
+                                              th:field="*{specifications}"
+                                              rows="4"
+                                              placeholder='{"объем": "344л", "класс": "A++", "цвет": "серебристый"}'></textarea>
+                                    <div class="form-text">Формат JSON для характеристик</div>
+                                </div>
+
+                                <!-- Изображение -->
+                                <div class="mb-3">
+                                    <label for="imageFile" class="form-label">Изображение товара</label>
+                                    <input type="file"
+                                           class="form-control"
+                                           id="imageFile"
+                                           name="imageFile"
+                                           accept="image/jpeg,image/png,image/webp"
+                                           onchange="previewImage(event)">
+                                    <div class="form-text">Форматы: JPEG, PNG, WEBP. Макс. 5MB</div>
+
+                                    <!-- Текущее изображение -->
+                                    <div th:if="${product.imagePath != null}" class="mt-2">
+                                        <small class="text-muted">Текущее изображение:</small><br>
+                                        <img th:src="@{/uploads/{path}(path=${product.imagePath})}"
+                                             class="preview-image"
+                                             id="currentImage"
+                                             alt="Текущее изображение">
+                                    </div>
+
+                                    <!-- Предпросмотр нового изображения -->
+                                    <div id="imagePreview" style="display: none;">
+                                        <small class="text-muted">Предпросмотр:</small><br>
+                                        <img id="preview" class="preview-image" alt="Предпросмотр">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Кнопки -->
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <span th:if="${product.id == null}">➕ Создать товар</span>
+                                <span th:if="${product.id != null}">💾 Сохранить изменения</span>
+                            </button>
+                            <a th:href="@{/admin/products}" class="btn btn-outline-secondary">
+                                Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Предпросмотр изображения
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+
+                // Скрыть текущее изображение
+                const currentImage = document.getElementById('currentImage');
+                if (currentImage) {
+                    currentImage.style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+</body>
+</html>

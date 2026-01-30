@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заказ #[[${order.id}]] - OMEGA Продавец</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- OMEGA Theme CSS -->
+    <link th:href="@{/css/omega-theme.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+        <div class="bg-circle bg-circle-4"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Продавец</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller}"><i class="fas fa-chart-line me-1"></i>Дашборд</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/new}"><i class="fas fa-plus-circle me-1"></i>Новые заказы</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/in-progress}"><i class="fas fa-cog me-1"></i>В обработке</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/ready}"><i class="fas fa-box me-1"></i>Готовы к отправке</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/history}"><i class="fas fa-history me-1"></i>История заказов</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/sales}"><i class="fas fa-dollar-sign me-1"></i>История продаж</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home me-1"></i>Вернуться на сайт</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="page-title" style="font-size: 2.5rem; margin: 0;">
+                <i class="fas fa-shopping-bag me-3"></i>Заказ #[[${order.id}]]
+            </h1>
+            <a th:href="@{/seller/orders/new}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Назад
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="glass-card mb-4">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-info-circle me-2"></i>Информация о заказе</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="40%"><i class="fas fa-tag me-2"></i>Статус:</th>
+                                <td>
+                                    <span th:switch="${order.status.name()}">
+                                        <span th:case="'NEW'" class="badge bg-warning">Новый</span>
+                                        <span th:case="'IN_PROGRESS'" class="badge bg-info">В обработке</span>
+                                        <span th:case="'READY_FOR_DELIVERY'" class="badge bg-success">Готов к отправке</span>
+                                        <span th:case="'DELIVERED'" class="badge bg-success">Доставлен</span>
+                                        <span th:case="'CANCELLED'" class="badge bg-danger">Отменён</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr><th><i class="fas fa-calendar me-2"></i>Дата:</th><td>[[${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}]]</td></tr>
+                            <tr><th><i class="fas fa-user me-2"></i>Пользователь:</th><td><strong>[[${order.user.username}]]</strong><br><small style="color: rgba(255,255,255,0.6);">[[${order.user.email}]]</small></td></tr>
+                            <tr><th><i class="fas fa-phone me-2"></i>Телефон:</th><td>[[${order.phone}]]</td></tr>
+                            <tr><th><i class="fas fa-map-marker-alt me-2"></i>Адрес:</th><td>[[${order.deliveryAddress}]]</td></tr>
+                            <tr th:if="${order.comment}"><th><i class="fas fa-comment me-2"></i>Комментарий:</th><td>[[${order.comment}]]</td></tr>
+                            <tr><th><i class="fas fa-money-bill-wave me-2"></i>Сумма:</th><td><strong style="color: #4facfe; font-size: 1.3rem;">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</strong></td></tr>
+                            <tr th:if="${order.invoiceNumber}"><th><i class="fas fa-file-invoice me-2"></i>Накладная:</th><td><strong>[[${order.invoiceNumber}]]</strong></td></tr>
+                            <tr th:if="${order.courier}"><th><i class="fas fa-truck me-2"></i>Курьер:</th><td><span class="badge bg-success">[[${order.courier.username}]]</span></td></tr>
+                            <tr th:if="${order.sellerComment}"><th><i class="fas fa-sticky-note me-2"></i>Комментарий продавца:</th><td>[[${order.sellerComment}]]</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Действия для нового заказа -->
+                <div class="glass-card" th:if="${order.status.name() == 'NEW'}">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-tasks me-2"></i>Действия</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <form th:action="@{/seller/orders/{id}/confirm(id=${order.id})}" method="post" class="mb-3">
+                            <div class="mb-3">
+                                <label class="form-label">Комментарий (необязательно):</label>
+                                <textarea name="sellerComment" class="form-control" rows="3" placeholder="Добавьте комментарий к заказу..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-check me-2"></i>Подтвердить заказ
+                            </button>
+                        </form>
+                        <form th:action="@{/seller/orders/{id}/reject(id=${order.id})}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Причина отклонения:</label>
+                                <textarea name="sellerComment" class="form-control" rows="3" required placeholder="Укажите причину отклонения заказа..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Вы уверены, что хотите отклонить заказ?')">
+                                <i class="fas fa-times me-2"></i>Отклонить заказ
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Действия для заказа в обработке -->
+                <div class="glass-card" th:if="${order.status.name() == 'IN_PROGRESS'}">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-box me-2"></i>Подготовка к отправке</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <form th:action="@{/seller/orders/{id}/prepare(id=${order.id})}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Номер накладной:</label>
+                                <input type="text" name="invoiceNumber" class="form-control" placeholder="Введите номер накладной">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Комментарий:</label>
+                                <textarea name="sellerComment" class="form-control" rows="3" placeholder="Добавьте комментарий..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-box me-2"></i>Подготовить к отправке
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Назначение курьера -->
+                <div class="glass-card" th:if="${order.status.name() == 'READY_FOR_DELIVERY'}">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-truck me-2"></i>Назначить курьера</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <form th:action="@{/seller/orders/{id}/assign-courier(id=${order.id})}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Выберите курьера:</label>
+                                <select name="courierId" class="form-select" required>
+                                    <option value="">-- Выберите курьера --</option>
+                                    <option th:each="courier : ${couriers}"
+                                            th:value="${courier.id}"
+                                            th:text="${courier.username}"
+                                            th:selected="${order.courier != null && order.courier.id == courier.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-truck me-2"></i>Назначить курьера
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="glass-card">
+                    <div class="card-header-glass">
+                        <h5><i class="fas fa-shopping-cart me-2"></i>Товары в заказе</h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Товар</th>
+                                    <th>Кол-во</th>
+                                    <th>Цена</th>
+                                    <th>Сумма</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${order.items}">
+                                    <td><strong th:text="${item.productName}">Товар</strong></td>
+                                    <td><span class="badge bg-info">[[${item.quantity}]] шт.</span></td>
+                                    <td>[[${#numbers.formatDecimal(item.price, 0, 'WHITESPACE', 2, 'POINT')}]] сом</td>
+                                    <td><strong style="color: #4facfe;">[[${#numbers.formatDecimal(item.totalPrice, 0, 'WHITESPACE', 2, 'POINT')}]] сом</strong></td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr style="border-top: 2px solid rgba(102, 126, 234, 0.3);">
+                                    <th colspan="3" style="font-size: 1.2rem;">Итого:</th>
+                                    <th style="color: #4facfe; font-size: 1.3rem;">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

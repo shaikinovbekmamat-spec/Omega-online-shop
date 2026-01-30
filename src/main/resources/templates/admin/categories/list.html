@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление категориями - OMEGA Admin</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- OMEGA Theme CSS -->
+    <link th:href="@{/css/omega-theme.css}" rel="stylesheet">
+
+    <style>
+        /* Обеспечиваем видимость текста */
+        body {
+            color: #000000 !important;  /* или color: #333333 !important; для темно-серого */
+        }
+
+        .page-title {
+            body {
+                color: #000000 !important;  /* или color: #333333 !important; для темно-серого */
+            }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header-glass {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem 2rem;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .card-header-glass h5 {
+            color: #ffffff !important;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            color: #ffffff !important;
+        }
+
+        /* Стили для алертов */
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2) !important;
+            border: 1px solid rgba(40, 167, 69, 0.5) !important;
+            color: #ffffff !important;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2) !important;
+            border: 1px solid rgba(220, 53, 69, 0.5) !important;
+            color: #ffffff !important;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Анимированный фон */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-circle-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .bg-circle-2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+
+        .bg-circle-3 {
+            width: 250px;
+            height: 250px;
+            bottom: 10%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        .bg-circle-4 {
+            width: 180px;
+            height: 180px;
+            top: 30%;
+            right: 30%;
+            animation-delay: 15s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(20px, -20px) scale(1.1);
+            }
+            50% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+            75% {
+                transform: translate(20px, 20px) scale(1.05);
+            }
+        }
+
+        /* Navbar стили */
+        .navbar {
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px);
+            padding-top: 70px;
+        }
+
+        .navbar-brand, .nav-link {
+            color: #ffffff !important;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #ffd700 !important;
+        }
+
+        /* Кнопки */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+<!-- Animated Background -->
+<div class="animated-bg">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-circle bg-circle-3"></div>
+    <div class="bg-circle bg-circle-4"></div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Admin</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin}"><i class="fas fa-chart-line me-1"></i>Дашборд</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/products}"><i class="fas fa-box me-1"></i>Товары</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/admin/categories}"><i class="fas fa-folder me-1"></i>Категории</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/orders}"><i class="fas fa-shopping-bag me-1"></i>Заказы</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/reports}"><i class="fas fa-chart-bar me-1"></i>Отчёты</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home me-1"></i>Вернуться на сайт</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title" style="font-size: 2.5rem; margin: 0;">
+            <i class="fas fa-folder me-3"></i>Управление категориями
+        </h1>
+        <a th:href="@{/admin/categories/new}" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i>Добавить категорию
+        </a>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-header-glass">
+            <h5><i class="fas fa-list me-2"></i>Дерево категорий</h5>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+            <div th:if="${#lists.isEmpty(rootCategories)}" class="text-center py-5" style="color: rgba(255,255,255,0.6);">
+                <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                <p class="mt-3 mb-0">Категории отсутствуют</p>
+            </div>
+
+            <!-- Дерево категорий -->
+            <div th:unless="${#lists.isEmpty(rootCategories)}">
+                <div th:each="rootCategory : ${rootCategories}" class="mb-3">
+                    <div th:replace="~{fragments/category-tree :: category-item(category=${rootCategory}, productCounts=${productCounts}, allCategories=${allCategories}, level=0)}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

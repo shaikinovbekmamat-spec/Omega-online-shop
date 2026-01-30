@@ -1,0 +1,549 @@
+/* ============================================
+   OMEGA THEME - GLOBAL STYLES
+   Modern, animated, beautiful design
+============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding-top: 60px;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================
+   ANIMATED BACKGROUND
+============================================ */
+.animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float-around 20s infinite ease-in-out;
+}
+
+.bg-circle-1 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.bg-circle-2 {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    top: 50%;
+    right: 10%;
+    animation-delay: 5s;
+}
+
+.bg-circle-3 {
+    width: 450px;
+    height: 450px;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    bottom: 10%;
+    left: 30%;
+    animation-delay: 10s;
+}
+
+.bg-circle-4 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #fa709a, #fee140);
+    top: 30%;
+    left: 50%;
+    animation-delay: 15s;
+}
+
+@keyframes float-around {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(50px, 50px) scale(1.1); }
+    50% { transform: translate(-30px, 80px) scale(0.9); }
+    75% { transform: translate(70px, -40px) scale(1.05); }
+}
+
+/* ============================================
+   NAVBAR
+============================================ */
+.navbar {
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(26, 26, 46, 0.85) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: 900;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.1);
+    filter: brightness(1.3);
+}
+
+.nav-link {
+    position: relative;
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 10px;
+}
+
+.nav-link:hover::before,
+.nav-link.active::before {
+    width: 80%;
+}
+
+.nav-link:hover {
+    color: #fff !important;
+    text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+}
+
+/* ============================================
+   CARDS - GLASSMORPHISM
+============================================ */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.card-header-glass {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+}
+
+.card-header-glass h4,
+.card-header-glass h5 {
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   BUTTONS
+============================================ */
+.btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #00f2fe, #4facfe);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #f5576c, #f093fb);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #fa709a, #fee140);
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #fee140, #fa709a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(250, 112, 154, 0.4);
+}
+
+.btn-outline-primary {
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    color: rgba(102, 126, 234, 1);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: transparent;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   TABLES
+============================================ */
+.table {
+    color: rgba(255, 255, 255, 0.9);
+    background: transparent;
+}
+
+.table thead th {
+    background: rgba(102, 126, 234, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.01);
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================
+   BADGES
+============================================ */
+.badge {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
+
+.badge.bg-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #f093fb, #f5576c) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #fa709a, #fee140) !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057) !important;
+}
+
+/* ============================================
+   ALERTS
+============================================ */
+.alert {
+    border-radius: 15px;
+    border: none;
+    backdrop-filter: blur(10px);
+    padding: 1.25rem 1.5rem;
+}
+
+.alert-success {
+    background: rgba(79, 172, 254, 0.2);
+    color: #fff;
+    border: 1px solid rgba(79, 172, 254, 0.3);
+}
+
+.alert-danger {
+    background: rgba(240, 147, 251, 0.2);
+    color: #fff;
+    border: 1px solid rgba(240, 147, 251, 0.3);
+}
+
+.alert-info {
+    background: rgba(102, 126, 234, 0.2);
+    color: #fff;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.alert-warning {
+    background: rgba(250, 112, 154, 0.2);
+    color: #fff;
+    border: 1px solid rgba(250, 112, 154, 0.3);
+}
+
+/* ============================================
+   PAGE TITLES
+============================================ */
+.page-title {
+    color: #fff;
+    font-weight: 800;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeInUp 0.8s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   STAT CARDS
+============================================ */
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #fff;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.stat-card h6 {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.stat-card h2 {
+    font-weight: 800;
+    font-size: 2.5rem;
+    margin: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card.bg-primary {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+}
+
+.stat-card.bg-success {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.3), rgba(0, 242, 254, 0.3));
+}
+
+.stat-card.bg-info {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.3), rgba(0, 242, 254, 0.3));
+}
+
+.stat-card.bg-warning {
+    background: linear-gradient(135deg, rgba(250, 112, 154, 0.3), rgba(254, 225, 64, 0.3));
+}
+
+/* ============================================
+   FORMS
+============================================ */
+.form-control,
+.form-select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(102, 126, 234, 0.5);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* ============================================
+   PAGINATION
+============================================ */
+.pagination .page-link {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    margin: 0 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: transparent;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: transparent;
+    color: #fff;
+}
+
+.pagination .page-item.disabled .page-link {
+    background: rgba(255, 255, 255, 0.02);
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+}
+
+/* ============================================
+   ANIMATIONS
+============================================ */
+@keyframes pulse-glow {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+.icon-bounce {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .stat-card h2 {
+        font-size: 2rem;
+    }
+}
+

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали заказа #[[${order.id}]] - OMEGA Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+        .status-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Admin</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}">📊 Дашборд</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/products}">📦 Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/categories}">📁 Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/orders}">📋 Заказы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/reports}">📊 Отчёты</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">← Вернуться на сайт</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <!-- Сообщения -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Заказ #[[${order.id}]]</h1>
+        <a th:href="@{/admin/orders}" class="btn btn-secondary">← Назад к списку</a>
+    </div>
+
+    <div class="row">
+        <!-- Информация о заказе -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Информация о заказе</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="40%">Статус:</th>
+                            <td>
+                                <span th:switch="${order.status.name()}">
+                                    <span th:case="'NEW'" class="badge bg-warning status-badge">Новый</span>
+                                    <span th:case="'IN_PROGRESS'" class="badge bg-info status-badge">В обработке</span>
+                                    <span th:case="'DELIVERED'" class="badge bg-success status-badge">Доставлен</span>
+                                    <span th:case="'CANCELLED'" class="badge bg-danger status-badge">Отменён</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Дата создания:</th>
+                            <td>[[${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}]]</td>
+                        </tr>
+                        <tr>
+                            <th>Пользователь:</th>
+                            <td>
+                                [[${order.user.username}]]<br>
+                                <small class="text-muted">[[${order.user.email}]]</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Телефон:</th>
+                            <td>[[${order.phone}]]</td>
+                        </tr>
+                        <tr>
+                            <th>Адрес доставки:</th>
+                            <td>[[${order.deliveryAddress}]]</td>
+                        </tr>
+                        <tr th:if="${order.comment != null && !order.comment.isEmpty()}">
+                            <th>Комментарий:</th>
+                            <td>[[${order.comment}]]</td>
+                        </tr>
+                        <tr>
+                            <th>Общая сумма:</th>
+                            <td>
+                                <strong class="text-success fs-5">
+                                    [[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                                </strong>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Изменение статуса -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Изменение статуса</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post">
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Новый статус:</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option th:each="status : ${statuses}"
+                                        th:value="${status.name()}"
+                                        th:text="${status.displayName}"
+                                        th:selected="${order.status == status}">
+                                </option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Изменить статус</button>
+                    </form>
+
+                    <hr>
+
+                    <form th:action="@{/admin/orders/{id}/cancel(id=${order.id})}" method="post"
+                          th:if="${order.status.name() != 'CANCELLED' && order.status.name() != 'DELIVERED'}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите отменить заказ?')">
+                            Отменить заказ
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Товары в заказе -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Товары в заказе</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Количество</th>
+                                <th>Цена</th>
+                                <th>Сумма</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${order.items}">
+                                <td>
+                                    <strong th:text="${item.productName}">Товар</strong>
+                                </td>
+                                <td>[[${item.quantity}]] шт.</td>
+                                <td>[[${#numbers.formatDecimal(item.price, 0, 'WHITESPACE', 2, 'POINT')}]] сом</td>
+                                <td>
+                                    <strong th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'WHITESPACE', 2, 'POINT')} + ' сом'">
+                                        0.00 сом
+                                    </strong>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="3">Итого:</th>
+                                <th class="text-success">
+                                    [[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                                </th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

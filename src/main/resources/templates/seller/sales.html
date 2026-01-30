@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История продаж - OMEGA Продавец</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- OMEGA Theme CSS -->
+    <link th:href="@{/css/omega-theme.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+        <div class="bg-circle bg-circle-4"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Продавец</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller}"><i class="fas fa-chart-line me-1"></i>Дашборд</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/new}"><i class="fas fa-plus-circle me-1"></i>Новые заказы</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/in-progress}"><i class="fas fa-cog me-1"></i>В обработке</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/ready}"><i class="fas fa-box me-1"></i>Готовы к отправке</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seller/orders/history}"><i class="fas fa-history me-1"></i>История заказов</a></li>
+                    <li class="nav-item"><a class="nav-link active" th:href="@{/seller/sales}"><i class="fas fa-dollar-sign me-1"></i>История продаж</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home me-1"></i>Вернуться на сайт</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid my-5">
+        <h1 class="page-title">
+            <i class="fas fa-dollar-sign me-3 icon-bounce"></i>История продаж
+        </h1>
+
+        <!-- Сообщения -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="glass-card mb-4">
+            <div class="card-header-glass">
+                <h5><i class="fas fa-filter me-2"></i>Параметры отчёта</h5>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                <form method="get" action="/seller/sales">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="startDate" class="form-label">Дата начала:</label>
+                            <input type="datetime-local" class="form-control" id="startDate" name="startDate"
+                                   th:value="${startDate != null ? #temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="endDate" class="form-label">Дата окончания:</label>
+                            <input type="datetime-local" class="form-control" id="endDate" name="endDate"
+                                   th:value="${endDate != null ? #temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="days" class="form-label">Или за последние (дней):</label>
+                            <input type="number" class="form-control" id="days" name="days" min="1"
+                                   th:value="${days != null ? days : ''}" placeholder="Например: 30">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-chart-bar me-2"></i>Сформировать отчёт
+                            </button>
+                            <a th:href="@{/seller/sales}" class="btn btn-outline-primary">Сбросить</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Период отчёта -->
+        <div th:if="${startDate != null && endDate != null}" class="alert alert-info">
+            <i class="fas fa-calendar-alt me-2"></i>
+            <strong>Период отчёта:</strong>
+            с [[${#temporals.format(startDate, 'dd.MM.yyyy HH:mm')}]] по [[${#temporals.format(endDate, 'dd.MM.yyyy HH:mm')}]]
+        </div>
+        <div th:if="${days != null && days > 0}" class="alert alert-info">
+            <i class="fas fa-clock me-2"></i>
+            <strong>Период отчёта:</strong> за последние [[${days}]] дней
+        </div>
+
+        <!-- Статистика -->
+        <div class="row mb-4" th:if="${salesReport != null}">
+            <div class="col-md-4">
+                <div class="stat-card bg-success">
+                    <h6><i class="fas fa-shopping-bag me-2"></i>Всего продано единиц</h6>
+                    <h2>[[${salesReport.totalSold != null ? salesReport.totalSold : 0}]]</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card bg-info">
+                    <h6><i class="fas fa-money-bill-wave me-2"></i>Общая сумма продаж</h6>
+                    <h2>[[${#numbers.formatDecimal(salesReport.totalSalesAmount != null ? salesReport.totalSalesAmount : 0, 0, 'WHITESPACE', 2, 'POINT')}]] сом</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card bg-warning">
+                    <h6><i class="fas fa-coins me-2"></i>Зарплата (10%)</h6>
+                    <h2>[[${#numbers.formatDecimal(salesReport.salary != null ? salesReport.salary : 0, 0, 'WHITESPACE', 2, 'POINT')}]] сом</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Детали отчёта -->
+        <div class="glass-card">
+            <div class="card-header-glass">
+                <h5><i class="fas fa-list me-2"></i>Детали продаж</h5>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                <div th:if="${salesReport != null}">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Параметр</th>
+                                <th class="text-end">Значение</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong><i class="fas fa-user me-2"></i>Имя продавца</strong></td>
+                                <td class="text-end">[[${salesReport.sellerName != null ? salesReport.sellerName : 'Не указано'}]]</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-envelope me-2"></i>Email</strong></td>
+                                <td class="text-end">[[${salesReport.sellerEmail != null && !salesReport.sellerEmail.isEmpty() ? salesReport.sellerEmail : '—'}]]</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-shopping-bag me-2"></i>Продано товаров</strong></td>
+                                <td class="text-end"><span class="badge bg-success">[[${salesReport.totalSold != null ? salesReport.totalSold : 0}]] шт.</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-money-bill-wave me-2"></i>Сумма продаж</strong></td>
+                                <td class="text-end"><span class="badge bg-primary">
+                                    [[${#numbers.formatDecimal(salesReport.totalSalesAmount != null ? salesReport.totalSalesAmount : 0, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                                </span></td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-coins me-2"></i>Зарплата (10%)</strong></td>
+                                <td class="text-end"><span class="badge bg-warning">
+                                    [[${#numbers.formatDecimal(salesReport.salary != null ? salesReport.salary : 0, 0, 'WHITESPACE', 2, 'POINT')}]] сом
+                                </span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:if="${salesReport == null || (salesReport.totalSold == 0 && salesReport.totalSalesAmount == 0)}" class="text-center py-5">
+                    <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                    <p class="mb-2" style="color: rgba(255,255,255,0.7);">Нет данных о продажах за выбранный период</p>
+                    <small style="color: rgba(255,255,255,0.5);">
+                        Возможные причины:<br>
+                        - Нет завершенных заказов (DELIVERED) с вашими товарами<br>
+                        - Товары в заказах не имеют указанного продавца (seller_id)<br>
+                        - Заказы находятся в других статусах
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
