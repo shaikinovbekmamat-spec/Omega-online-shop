@@ -16,14 +16,17 @@ public class CartService {
     private final ProductService productService;
 
     /**
-     * Добавить товар в корзину
+     * Добавить товар в корзину Бека топ
      */
     public void addToCart(Long productId, int quantity) {
         log.info("Добавление товара {} в корзину, количество: {}", productId, quantity);
 
         // Проверка количества
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Количество должно быть больше 0");
+
+            throw new IllegalArgumentException("Количество должно быть   больше 0");
+
+
         }
 
         // Получение товара
