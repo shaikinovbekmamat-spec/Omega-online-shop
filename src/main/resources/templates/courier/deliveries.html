@@ -4,149 +4,459 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Доставки - OMEGA Курьер</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- OMEGA Theme CSS -->
-    <link th:href="@{/css/omega-theme.css}" rel="stylesheet">
+
+    <style>
+        /* ===== ПОЛНОСТЬЮ ТЁМНАЯ ТЕМА ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0c15;
+            color: #eef2ff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Анимированный фон */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.45;
+            animation: floatBg 22s infinite alternate ease-in-out;
+        }
+
+        .bg-circle-1 {
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(79,172,254,0.35) 0%, rgba(0,212,255,0) 80%);
+            top: -20vh;
+            left: -10vw;
+            animation-duration: 18s;
+        }
+
+        .bg-circle-2 {
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(139,92,246,0) 80%);
+            bottom: -30vh;
+            right: -15vw;
+            animation-duration: 25s;
+        }
+
+        .bg-circle-3 {
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle, rgba(6,182,212,0.25) 0%, rgba(6,182,212,0) 80%);
+            top: 40vh;
+            left: 60vw;
+            animation-duration: 22s;
+        }
+
+        .bg-circle-4 {
+            width: 35vw;
+            height: 35vw;
+            background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, rgba(245,158,11,0) 80%);
+            bottom: 10vh;
+            left: -5vw;
+            animation-duration: 28s;
+        }
+
+        @keyframes floatBg {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* Навбар */
+        .navbar {
+            background: rgba(10, 12, 21, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(79, 172, 254, 0.2);
+            padding: 0.9rem 1.5rem;
+            z-index: 1050;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.7rem;
+            background: linear-gradient(135deg, #fff, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.75);
+            font-weight: 500;
+            margin: 0 0.25rem;
+            transition: all 0.2s;
+            border-radius: 40px;
+        }
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            color: white;
+            background: rgba(79, 172, 254, 0.2);
+        }
+
+        /* Glass Card — тёмный стиль */
+        .glass-card {
+            background: #0f111a;
+            border-radius: 28px;
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.45);
+            overflow: hidden;
+        }
+
+        .card-header-glass {
+            background: rgba(15, 17, 26, 0.96);
+            padding: 1.2rem 1.8rem;
+            border-bottom: 1px solid rgba(79, 172, 254, 0.25);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #f0f3ff;
+        }
+
+        .card-header-glass h5 {
+            color: #f0f3ff;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .card-body {
+            color: #eef2ff;
+            padding: 2rem !important;
+        }
+
+        /* Стили формы фильтра */
+        .form-label {
+            color: #b9c7ff;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .form-select {
+            background-color: #131625;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            color: #eef2ff;
+            border-radius: 14px;
+            padding: 0.6rem 1rem;
+        }
+        .form-select:focus {
+            background-color: #1a1e2c;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 0.2rem rgba(79,172,254,0.25);
+            color: #fff;
+        }
+
+        /* Таблица — тёмная, без белых вставок */
+        .table {
+            color: #eef2ff;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table thead th {
+            background: #0b0d16;
+            color: #b9c7ff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(79, 172, 254, 0.3);
+            padding: 1rem 0.8rem;
+        }
+        .table tbody tr {
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .table tbody tr:hover {
+            background: rgba(79, 172, 254, 0.07);
+        }
+        .table td {
+            background-color: transparent;
+            padding: 1rem 0.8rem;
+            vertical-align: middle;
+            border: none;
+            color: #eef2ff;
+        }
+
+        /* Кнопки */
+        .btn-primary {
+            background: linear-gradient(105deg, #2b6ef0, #0a4bc2);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: 0.2s;
+            box-shadow: 0 4px 14px rgba(43,110,240,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(105deg, #3f7ef5, #1a5ad4);
+            box-shadow: 0 8px 20px rgba(43,110,240,0.4);
+        }
+        .btn-sm.btn-primary {
+            padding: 0.35rem 0.9rem;
+            font-size: 0.8rem;
+        }
+
+        /* Badges статусов */
+        .badge {
+            padding: 0.4em 0.9em;
+            font-weight: 500;
+            border-radius: 40px;
+        }
+        .badge.bg-warning {
+            background: #b45309 !important;
+            color: #fff3e0;
+        }
+        .badge.bg-info {
+            background: #0e6b8f !important;
+            color: #e0f7ff;
+        }
+        .badge.bg-success {
+            background: #0f7b3a !important;
+            box-shadow: 0 0 6px rgba(15,123,58,0.4);
+        }
+        .badge.bg-danger {
+            background: #b91c1c !important;
+        }
+        .badge.bg-secondary {
+            background: #2c2f3e !important;
+            color: #e0e7ff;
+        }
+
+        /* Заголовок страницы */
+        .page-title {
+            font-weight: 800;
+            background: linear-gradient(125deg, #ffffff, #8bbaff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Алерты */
+        .alert-success {
+            background: rgba(16, 96, 56, 0.9) !important;
+            border: 1px solid #2ecc71 !important;
+            color: #eafff0 !important;
+            backdrop-filter: blur(4px);
+        }
+        .alert-danger {
+            background: rgba(150, 30, 30, 0.9) !important;
+            border: 1px solid #e74c3c !important;
+            color: #ffe6e6 !important;
+        }
+        .btn-close-white {
+            filter: invert(1);
+        }
+
+        /* Пагинация */
+        .pagination .page-link {
+            background: #141723;
+            border: 1px solid rgba(79,172,254,0.3);
+            color: #cbd5ff;
+            transition: 0.2s;
+            border-radius: 8px;
+            margin: 0 2px;
+        }
+        .pagination .page-item.active .page-link {
+            background: #2b6ef0;
+            border-color: #2b6ef0;
+            color: white;
+        }
+        .pagination .page-link:hover {
+            background: #1f2a4a;
+            color: white;
+        }
+
+        /* Иконка с анимацией */
+        .icon-bounce {
+            display: inline-block;
+            animation: bounce 2s ease infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* Контейнер */
+        .container-fluid {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Мелкие элементы */
+        small {
+            font-size: 0.75rem;
+        }
+        .text-muted-light {
+            color: rgba(255,255,255,0.55);
+        }
+    </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="animated-bg">
-        <div class="bg-circle bg-circle-1"></div>
-        <div class="bg-circle bg-circle-2"></div>
-        <div class="bg-circle bg-circle-3"></div>
-        <div class="bg-circle bg-circle-4"></div>
+<!-- Animated Background -->
+<div class="animated-bg">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-circle bg-circle-3"></div>
+    <div class="bg-circle bg-circle-4"></div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Курьер</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/courier}"><i class="fas fa-chart-line me-1"></i>Дашборд</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/courier/deliveries}"><i class="fas fa-truck me-1"></i>Доставки</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/courier/deliveries/history}"><i class="fas fa-history me-1"></i>История</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home me-1"></i>Вернуться на сайт</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid my-5 pt-4">
+    <h1 class="page-title mb-4">
+        <i class="fas fa-truck me-3 icon-bounce"></i>Мои доставки
+    </h1>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/}"><strong>OMEGA</strong> Курьер</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/courier}"><i class="fas fa-chart-line me-1"></i>Дашборд</a></li>
-                    <li class="nav-item"><a class="nav-link active" th:href="@{/courier/deliveries}"><i class="fas fa-truck me-1"></i>Доставки</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/courier/deliveries/history}"><i class="fas fa-history me-1"></i>История</a></li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home me-1"></i>Вернуться на сайт</a></li>
-                </ul>
-            </div>
+    <!-- Фильтр по статусу -->
+    <div class="glass-card mb-4">
+        <div class="card-header-glass">
+            <h5><i class="fas fa-filter me-2"></i>Фильтр по статусу</h5>
         </div>
-    </nav>
-
-    <div class="container-fluid my-5">
-        <h1 class="page-title mb-4">
-            <i class="fas fa-truck me-3 icon-bounce"></i>Мои доставки
-        </h1>
-
-        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
-            <i class="fas fa-check-circle me-2"></i>
-            <span th:text="${successMessage}"></span>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-        </div>
-        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            <span th:text="${errorMessage}"></span>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-        </div>
-
-        <div class="glass-card mb-4">
-            <div class="card-header-glass">
-                <h5><i class="fas fa-filter me-2"></i>Фильтр по статусу</h5>
-            </div>
-            <div class="card-body" style="padding: 2rem;">
-                <form method="get" action="/courier/deliveries">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-4">
-                            <label for="status" class="form-label">Статус доставки:</label>
-                            <select class="form-select" id="status" name="status">
-                                <option value="">Все доставки</option>
-                                <option th:each="status : ${statuses}"
-                                        th:value="${status.name()}"
-                                        th:text="${status.displayName}"
-                                        th:selected="${selectedStatus != null && selectedStatus == status}">
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-search me-2"></i>Применить
-                            </button>
-                        </div>
+        <div class="card-body">
+            <form method="get" action="/courier/deliveries">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">Статус доставки:</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Все доставки</option>
+                            <option th:each="status : ${statuses}"
+                                    th:value="${status.name()}"
+                                    th:text="${status.displayName}"
+                                    th:selected="${selectedStatus != null && selectedStatus == status}">
+                            </option>
+                        </select>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="glass-card">
-            <div class="card-header-glass">
-                <h5><i class="fas fa-list me-2"></i>Список доставок</h5>
-            </div>
-            <div class="card-body" style="padding: 2rem;">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ID заказа</th>
-                            <th>Клиент</th>
-                            <th>Телефон</th>
-                            <th>Адрес</th>
-                            <th>Сумма</th>
-                            <th>Статус доставки</th>
-                            <th>Действия</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="order : ${orders}">
-                            <td><strong>#[[${order.id}]]</strong></td>
-                            <td>
-                                <strong>[[${order.user.username}]]</strong><br>
-                                <small style="color: rgba(255,255,255,0.6);">[[${order.user.email}]]</small>
-                            </td>
-                            <td><i class="fas fa-phone me-1"></i>[[${order.phone}]]</td>
-                            <td><small><i class="fas fa-map-marker-alt me-1"></i>[[${#strings.abbreviate(order.deliveryAddress, 30)}]]</small></td>
-                            <td><strong style="color: #4facfe;">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</strong></td>
-                            <td>
-                                <span th:switch="${order.deliveryStatus?.name()}">
-                                    <span th:case="'ASSIGNED'" class="badge bg-warning">Назначена</span>
-                                    <span th:case="'IN_TRANSIT'" class="badge bg-info">В пути</span>
-                                    <span th:case="'DELIVERED'" class="badge bg-success">Доставлен</span>
-                                    <span th:case="'FAILED'" class="badge bg-danger">Не доставлен</span>
-                                </span>
-                            </td>
-                            <td>
-                                <a th:href="@{/courier/deliveries/{id}(id=${order.id})}" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-eye me-1"></i>Просмотр
-                                </a>
-                            </td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(orders)}">
-                            <td colspan="7" class="text-center py-5" style="color: rgba(255,255,255,0.6);">
-                                <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-                                <p class="mb-0">Доставок не найдено</p>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Применить
+                        </button>
+                    </div>
                 </div>
+            </form>
+        </div>
+    </div>
 
-                <nav th:if="${totalPages > 1}" class="mt-4">
+    <!-- Таблица доставок -->
+    <div class="glass-card">
+        <div class="card-header-glass">
+            <h5><i class="fas fa-list me-2"></i>Список доставок</h5>
+        </div>
+        <div class="card-body" style="padding: 0 !important;">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID заказа</th>
+                        <th>Клиент</th>
+                        <th>Телефон</th>
+                        <th>Адрес</th>
+                        <th>Сумма</th>
+                        <th>Статус доставки</th>
+                        <th class="text-end">Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td><strong>#[[${order.id}]]</strong></td>
+                        <td>
+                            <strong>[[${order.user.username}]]</strong><br>
+                            <small style="color: rgba(255,255,255,0.55);">[[${order.user.email}]]</small>
+                        </td>
+                        <td><i class="fas fa-phone-alt me-1" style="color:#8bbaff;"></i> [[${order.phone}]]</td>
+                        <td>
+                            <small>
+                                <i class="fas fa-map-marker-alt me-1" style="color:#8bbaff;"></i>
+                                [[${#strings.abbreviate(order.deliveryAddress, 35)}]]
+                            </small>
+                        </td>
+                        <td><strong style="color: #7bc5ff;">[[${#numbers.formatDecimal(order.totalAmount, 0, 'WHITESPACE', 2, 'POINT')}]] сом</strong></td>
+                        <td>
+                                    <span th:switch="${order.deliveryStatus?.name()}">
+                                        <span th:case="'ASSIGNED'" class="badge bg-warning">Назначена</span>
+                                        <span th:case="'IN_TRANSIT'" class="badge bg-info">В пути</span>
+                                        <span th:case="'DELIVERED'" class="badge bg-success">Доставлен</span>
+                                        <span th:case="'FAILED'" class="badge bg-danger">Не доставлен</span>
+                                        <span th:case="'READY'" class="badge bg-info">Готов</span>
+                                    </span>
+                        </td>
+                        <td class="text-end">
+                            <a th:href="@{/courier/deliveries/{id}(id=${order.id})}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye me-1"></i>Просмотр
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="7" class="text-center py-5" style="color: rgba(255,255,255,0.6);">
+                            <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                            <p class="mb-0">Доставок не найдено</p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Пагинация -->
+            <div th:if="${totalPages > 1}" class="px-3 pb-4 pt-3">
+                <nav>
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                             <a class="page-link" th:href="@{/courier/deliveries(page=${currentPage - 1}, status=${selectedStatus?.name()})}">
-                                <i class="fas fa-chevron-left"></i> Предыдущая
+                                <i class="fas fa-chevron-left"></i> Пред.
                             </a>
                         </li>
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
@@ -155,15 +465,22 @@
                         </li>
                         <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
                             <a class="page-link" th:href="@{/courier/deliveries(page=${currentPage + 1}, status=${selectedStatus?.name()})}">
-                                Следующая <i class="fas fa-chevron-right"></i>
+                                След. <i class="fas fa-chevron-right"></i>
                             </a>
                         </li>
                     </ul>
                 </nav>
+                <p class="text-center mt-2 mb-0" style="color: rgba(200,210,255,0.7); font-size: 0.9rem;">
+                    Страница <strong th:text="${currentPage + 1}">1</strong> из <strong th:text="${totalPages}">1</strong>
+                </p>
+            </div>
+            <div th:if="${totalPages <= 1 and not #lists.isEmpty(orders)}" class="text-center pb-4 pt-2" style="color:#b9c7ff;">
+                <small>Всего доставок: <strong th:text="${totalItems}"></strong></small>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

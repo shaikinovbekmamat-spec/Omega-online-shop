@@ -2,32 +2,32 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <body>
     <!-- Фрагмент для отображения категории с подкатегориями -->
-    <div th:fragment="category-item(category, productCounts, allCategories, level)" 
+    <div th:fragment="category-item(category, productCounts, allCategories, level)"
          class="category-item" th:style="'padding-left: ' + ${level * 30} + 'px;'">
-        <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2 bg-light">
+        <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2 bg-dark text-white shadow-sm">
             <div class="flex-grow-1">
                 <div class="d-flex align-items-center">
-                    <i th:if="${category.parent != null}" class="bi bi-arrow-return-right me-2 text-muted"></i>
-                    <strong th:text="${category.getFullPath()}">[[${category.name}]]</strong>
-                    <span th:if="${category.parent != null}" class="badge bg-secondary ms-2">Подкатегория</span>
+                    <i th:if="${category.parent != null}" class="bi bi-arrow-return-right me-2 text-info"></i>
+                    <strong th:text="${category.getFullPath()}" class="text-light">[[${category.name}]]</strong>
+                    <span th:if="${category.parent != null}" class="badge bg-primary ms-2">Подкатегория</span>
                 </div>
-                <div th:if="${category.description}" class="small text-muted mt-1">
+                <div th:if="${category.description}" class="small text-info opacity-75 mt-1">
                     [[${#strings.abbreviate(category.description, 50)}]]
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-info" th:text="${productCounts != null ? productCounts.get(category.id) : 0}">0</span>
-                <small class="text-muted me-2" th:text="${#temporals.format(category.createdAt, 'dd.MM.yyyy')}">01.01.2024</small>
+                <span class="badge bg-info text-dark" th:text="${productCounts != null ? productCounts.get(category.id) : 0}">0</span>
+                <small class="text-info me-2" th:text="${#temporals.format(category.createdAt, 'dd.MM.yyyy')}">01.01.2024</small>
                 <div class="btn-group btn-group-sm" role="group">
                     <a th:href="@{/admin/categories/new(parentId=${category.id})}"
-                       class="btn btn-outline-success" title="Добавить подкатегорию">
-                        <i class="bi bi-plus-circle"></i> Подкатегория
+                       class="btn btn-outline-success border-success" title="Добавить подкатегорию">
+                        <i class="bi bi-plus-circle"></i>
                     </a>
                     <a th:href="@{/admin/categories/{id}/edit(id=${category.id})}"
-                       class="btn btn-outline-primary" title="Редактировать">
+                       class="btn btn-outline-primary border-primary" title="Редактировать">
                         <i class="bi bi-pencil"></i>
                     </a>
-                    <button type="button" class="btn btn-outline-danger"
+                    <button type="button" class="btn btn-outline-danger border-danger"
                             data-bs-toggle="modal" th:data-bs-target="'#deleteModal' + ${category.id}" title="Удалить">
                         <i class="bi bi-trash"></i>
                     </button>
@@ -38,14 +38,14 @@
         <!-- Модальное окно удаления -->
         <div class="modal fade" th:id="'deleteModal' + ${category.id}" tabindex="-1">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
+                <div class="modal-content bg-dark text-white border-secondary">
+                    <div class="modal-header border-secondary">
                         <h5 class="modal-title">Подтверждение удаления</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Вы действительно хотите удалить категорию <strong th:text="${category.getFullPath()}">?</strong></p>
-                        <p class="text-danger" th:if="${productCounts != null && productCounts.get(category.id) > 0}">
+                        <p>Вы действительно хотите удалить категорию <strong th:text="${category.getFullPath()}" class="text-info">?</strong></p>
+                        <p class="text-warning" th:if="${productCounts != null && productCounts.get(category.id) > 0}">
                             <i class="bi bi-exclamation-triangle"></i>
                             В этой категории есть товары (<span th:text="${productCounts.get(category.id)}"></span>).
                         </p>
@@ -54,7 +54,7 @@
                             У этой категории есть подкатегории. Сначала удалите или переместите их.
                         </p>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer border-secondary">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                         <form th:action="@{/admin/categories/{id}/delete(id=${category.id})}" method="post" class="d-inline">
                             <button type="submit" class="btn btn-danger">Удалить</button>

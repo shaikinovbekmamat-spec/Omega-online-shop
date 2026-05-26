@@ -14,157 +14,296 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- OMEGA Theme CSS -->
-    <link th:href="@{/css/omega-theme.css}" rel="stylesheet">
-
     <style>
-        /* Обеспечиваем видимость текста */
-        body {
-            color: #000000 !important;  /* или color: #333333 !important; для темно-серого */
-        }
-
-        .page-title {
-            body {
-                color: #000000 !important;  /* или color: #333333 !important; для темно-серого */
-            }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-header-glass {
-            background: rgba(255, 255, 255, 0.15) !important;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1.5rem 2rem;
-            border-radius: 20px 20px 0 0;
-        }
-
-        .card-header-glass h5 {
-            color: #ffffff !important;
-            font-weight: 600;
+        /* ===== ПОЛНОСТЬЮ ТЁМНАЯ ТЕМА, КОНТРАСТ С ЗАДНИМ ФОНОМ ===== */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .card-body {
-            color: #ffffff !important;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0c15;
+            color: #eef2ff;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* Стили для алертов */
-        .alert-success {
-            background: rgba(40, 167, 69, 0.2) !important;
-            border: 1px solid rgba(40, 167, 69, 0.5) !important;
-            color: #ffffff !important;
-            backdrop-filter: blur(10px);
-        }
-
-        .alert-danger {
-            background: rgba(220, 53, 69, 0.2) !important;
-            border: 1px solid rgba(220, 53, 69, 0.5) !important;
-            color: #ffffff !important;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Анимированный фон */
+        /* Анимированные круги как на заднем фоне (глубокий тёмный градиент) */
         .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 0;
             overflow: hidden;
+            pointer-events: none;
         }
 
         .bg-circle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            animation: float 20s infinite ease-in-out;
+            filter: blur(90px);
+            opacity: 0.5;
+            animation: floatBg 20s infinite alternate ease-in-out;
         }
 
         .bg-circle-1 {
-            width: 300px;
-            height: 300px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(79,172,254,0.35) 0%, rgba(0,212,255,0) 80%);
+            top: -20vh;
+            left: -10vw;
+            animation-duration: 18s;
         }
 
         .bg-circle-2 {
-            width: 200px;
-            height: 200px;
-            top: 60%;
-            right: 15%;
-            animation-delay: 5s;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(139,92,246,0) 80%);
+            bottom: -30vh;
+            right: -15vw;
+            animation-duration: 25s;
         }
 
         .bg-circle-3 {
-            width: 250px;
-            height: 250px;
-            bottom: 10%;
-            left: 50%;
-            animation-delay: 10s;
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle, rgba(6,182,212,0.25) 0%, rgba(6,182,212,0) 80%);
+            top: 40vh;
+            left: 60vw;
+            animation-duration: 22s;
         }
 
         .bg-circle-4 {
-            width: 180px;
-            height: 180px;
-            top: 30%;
-            right: 30%;
-            animation-delay: 15s;
+            width: 35vw;
+            height: 35vw;
+            background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, rgba(245,158,11,0) 80%);
+            bottom: 10vh;
+            left: -5vw;
+            animation-duration: 28s;
         }
 
-        @keyframes float {
-            0%, 100% {
+        @keyframes floatBg {
+            0% {
                 transform: translate(0, 0) scale(1);
             }
-            25% {
-                transform: translate(20px, -20px) scale(1.1);
-            }
-            50% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-            75% {
-                transform: translate(20px, 20px) scale(1.05);
+            100% {
+                transform: translate(5%, 5%) scale(1.1);
             }
         }
 
-        /* Navbar стили */
+        /* НАВБАР — тёмный полупрозрачный, стекло */
         .navbar {
-            background: rgba(0, 0, 0, 0.3) !important;
-            backdrop-filter: blur(10px);
-            padding-top: 70px;
+            background: rgba(10, 12, 21, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(79, 172, 254, 0.2);
+            padding: 0.9rem 1.5rem;
+            z-index: 1050;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.7rem;
+            background: linear-gradient(135deg, #fff, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.75);
+            font-weight: 500;
+            margin: 0 0.25rem;
+            transition: all 0.2s;
+            border-radius: 40px;
+        }
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            color: white;
+            background: rgba(79, 172, 254, 0.2);
         }
 
-        .navbar-brand, .nav-link {
-            color: #ffffff !important;
+        /* Карточка — глубокий тёмный фон с лёгкой границей */
+        .glass-card {
+            background: #0f111a;
+            border-radius: 28px;
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.45);
+            overflow: hidden;
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: #ffd700 !important;
+        .card-header-glass {
+            background: rgba(15, 17, 26, 0.96);
+            padding: 1.2rem 1.8rem;
+            border-bottom: 1px solid rgba(79, 172, 254, 0.25);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #f0f3ff;
         }
 
-        /* Кнопки */
+        .card-header-glass h5 {
+            color: #f0f3ff !important;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-body {
+            color: #eef2ff;
+            padding: 2rem !important;
+        }
+
+        /* Стили для дерева категорий — единый тёмный стиль */
+        .category-tree {
+            list-style: none;
+            padding-left: 0;
+        }
+        .category-item {
+            margin-bottom: 0.75rem;
+        }
+        .category-card {
+            background: #131625;
+            border-radius: 20px;
+            padding: 0.9rem 1.2rem;
+            transition: all 0.2s;
+            border: 1px solid rgba(79, 172, 254, 0.15);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .category-card:hover {
+            background: #1a1e2c;
+            border-color: rgba(79, 172, 254, 0.4);
+            transform: translateX(4px);
+        }
+        .category-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .category-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+        .category-badge {
+            background: #1e2a3e;
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #8bbaff;
+        }
+        .product-count {
+            background: #0f1a2b;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #b9d0ff;
+        }
+        .category-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .children-list {
+            list-style: none;
+            padding-left: 2rem;
+            margin-top: 0.75rem;
+        }
+        .btn-cat-outline {
+            background: transparent;
+            border: 1px solid rgba(79, 172, 254, 0.5);
+            color: #8bbaff;
+            border-radius: 32px;
+            padding: 0.3rem 0.9rem;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+        .btn-cat-outline:hover {
+            background: #2b6ef0;
+            border-color: #2b6ef0;
+            color: white;
+        }
+        .btn-cat-danger {
+            background: transparent;
+            border: 1px solid rgba(220, 53, 69, 0.6);
+            color: #ff8a92;
+            border-radius: 32px;
+            padding: 0.3rem 0.9rem;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+        .btn-cat-danger:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+
+        /* Кнопка добавления */
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(105deg, #2b6ef0, #0a4bc2);
             border: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: 0.2s;
+            box-shadow: 0 4px 14px rgba(43,110,240,0.3);
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(105deg, #3f7ef5, #1a5ad4);
+            box-shadow: 0 8px 20px rgba(43,110,240,0.4);
+        }
+
+        /* Заголовок страницы */
+        .page-title {
+            font-weight: 800;
+            background: linear-gradient(125deg, #ffffff, #8bbaff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Алерты */
+        .alert-success {
+            background: rgba(16, 96, 56, 0.9) !important;
+            border: 1px solid #2ecc71 !important;
+            color: #eafff0 !important;
+            backdrop-filter: blur(4px);
+        }
+        .alert-danger {
+            background: rgba(150, 30, 30, 0.9) !important;
+            border: 1px solid #e74c3c !important;
+            color: #ffe6e6 !important;
+        }
+        .btn-close-white {
+            filter: invert(1);
+        }
+
+        /* Контейнер и отступы */
+        .container-fluid {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Модальное окно (тёмное) */
+        .modal-content {
+            background: #11131f;
+            border: 1px solid rgba(79,172,254,0.3);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+        }
+        .modal-header, .modal-footer {
+            border-color: rgba(255,255,255,0.1);
+        }
+        .text-muted-custom {
+            color: #9aa6d9;
         }
     </style>
 </head>
 <body>
-<!-- Animated Background -->
+
+<!-- Анимированный фон как на главном экране (тёмный с цветными кругами) -->
 <div class="animated-bg">
     <div class="bg-circle bg-circle-1"></div>
     <div class="bg-circle bg-circle-2"></div>
@@ -194,8 +333,8 @@
     </div>
 </nav>
 
-<div class="container-fluid my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container-fluid my-5 pt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
         <h1 class="page-title" style="font-size: 2.5rem; margin: 0;">
             <i class="fas fa-folder me-3"></i>Управление категориями
         </h1>
@@ -204,6 +343,7 @@
         </a>
     </div>
 
+    <!-- Сообщения -->
     <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
         <i class="fas fa-check-circle me-2"></i>
         <span th:text="${successMessage}"></span>
@@ -215,26 +355,98 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
     </div>
 
+    <!-- Карточка с деревом категорий (полностью тёмная) -->
     <div class="glass-card">
         <div class="card-header-glass">
-            <h5><i class="fas fa-list me-2"></i>Дерево категорий</h5>
+            <h5><i class="fas fa-sitemap me-2"></i>Иерархия категорий</h5>
         </div>
-        <div class="card-body" style="padding: 2rem;">
+        <div class="card-body">
             <div th:if="${#lists.isEmpty(rootCategories)}" class="text-center py-5" style="color: rgba(255,255,255,0.6);">
                 <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-                <p class="mt-3 mb-0">Категории отсутствуют</p>
+                <p class="mt-3 mb-0">Категории отсутствуют. Нажмите «Добавить категорию».</p>
             </div>
 
-            <!-- Дерево категорий -->
+            <!-- Дерево категорий (рекурсивный фрагмент) -->
             <div th:unless="${#lists.isEmpty(rootCategories)}">
                 <div th:each="rootCategory : ${rootCategories}" class="mb-3">
-                    <div th:replace="~{fragments/category-tree :: category-item(category=${rootCategory}, productCounts=${productCounts}, allCategories=${allCategories}, level=0)}"></div>
+                    <div th:replace="~{::adminCategoryItem(category=${rootCategory}, productCounts=${productCounts}, level=0)}"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Определение фрагмента category-tree прямо на странице (чтобы не зависеть от внешнего файла) -->
+<th:block th:fragment="adminCategoryItem(category, productCounts, level)">
+    <div class="category-item" th:with="productCount=${productCounts != null ? productCounts.get(category.id) : 0}">
+        <div class="category-card">
+            <div class="category-info">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <!-- Отступ в зависимости от уровня -->
+                    <span th:if="${level > 0}" th:style="'width: ' + (${level} * 1.5) + 'rem;'"></span>
+                    <i class="fas fa-folder-open" style="color: #4facfe; font-size: 1.3rem;"></i>
+                    <span class="category-name" th:text="${category.name}">Категория</span>
+                    <span class="category-badge">
+                        <i class="fas fa-tag me-1"></i>ID: <span th:text="${category.id}"></span>
+                    </span>
+                    <span class="product-count">
+                        <i class="fas fa-box me-1"></i>
+                        <span th:text="${productCount}">0</span> товаров
+                    </span>
+                </div>
+                <div class="category-actions">
+                    <a th:href="@{/admin/categories/{id}/edit(id=${category.id})}" class="btn-cat-outline" title="Редактировать">
+                        <i class="fas fa-pencil-alt me-1"></i> Изменить
+                    </a>
+                    <button type="button" class="btn-cat-danger" data-bs-toggle="modal" th:data-bs-target="'#deleteCatModal' + ${category.id}" title="Удалить">
+                        <i class="fas fa-trash-alt me-1"></i> Удалить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно удаления категории -->
+        <div class="modal fade" th:id="'deleteCatModal' + ${category.id}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="color: #fff;"><i class="fas fa-trash-alt me-2 text-danger"></i>Удаление категории</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" style="color: #e2e8ff;">
+                        <p>Вы уверены, что хотите удалить категорию <strong class="text-info" th:text="${category.name}">?</strong></p>
+                        <p class="small" style="color:#8d9eff;">Внимание: товары, связанные с этой категорией, могут остаться без категории. Действие необратимо.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <form th:action="@{/admin/categories/{id}/delete(id=${category.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Рекурсивный вывод дочерних категорий -->
+        <div th:if="${category.children != null and not #lists.isEmpty(category.children)}">
+            <ul class="children-list">
+                <li th:each="child : ${category.children}" class="category-item-child">
+                    <div th:replace="~{::adminCategoryItem(category=${child}, productCounts=${productCounts}, level=${level + 1})}"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</th:block>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Автоматическая инициализация тултипов, если нужны подсказки
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
 </body>
 </html>
